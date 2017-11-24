@@ -1,5 +1,5 @@
 # sciDV
-##### **iteractive Data Visualization for single cell RNA-Seq**  
+##### **interactive Data Visualization for single cell RNA-Seq**  
 
 >*Saved Rdata file should include the following datasets*  
 *Notice: Variable names should not be changed*
