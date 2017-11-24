@@ -36,5 +36,7 @@
 ```R
 # list(), 
 # of which names should be among both annotation names of 
-# Coordinate-Type-columns in data_annot.
+# Coordinate-Type-columns in data_annot;
+# each sublist should be a vector named by annotation names
+# used for 2D-dimension-plot.
 ```
