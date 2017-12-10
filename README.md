@@ -34,6 +34,7 @@ EC #05   EC     05    0.5    0.2
 
 - **`data_color`**
 ```R
+# Alt-1
 # list(), 
 # of which names should be among annotation names of data_annot; 
 # each sublist should be a vector named by categories of 
@@ -42,6 +43,10 @@ EC #05   EC     05    0.5    0.2
 $Type
                EC        T1 pre-HSC
      "DarkOrange"             "red"          
+# Alt-2
+# vector() including sufficient color-names, RGBs.
+# such as c("black","blue")
+# these distinct colors will be applied to categories of each annotation in data_subcat .
 ```
 
 - **`data_subcat`**
