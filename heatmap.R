@@ -70,9 +70,15 @@ output$heatmap <- renderPlot({
     }
     ind_Gene <- match("Gene", input$tabHeatmap.sortCol)
     if(ind_Gene > 1){
-      sort_annot <- c(input$tabHeatmap.sortCol[1:(ind_Gene-1)], sort_cols.genes, input$tabHeatmap.sortCol[(ind_Gene+1):length(input$tabHeatmap.sortCol)])
+      if(length(input$tabHeatmap.sortCol) > (ind_Gene + 1) )
+        sort_annot <- c(input$tabHeatmap.sortCol[1:(ind_Gene-1)], sort_cols.genes, input$tabHeatmap.sortCol[(ind_Gene+1):length(input$tabHeatmap.sortCol)])
+      else
+        sort_annot <- c(input$tabHeatmap.sortCol[1:(ind_Gene-1)], sort_cols.genes)
     }else{
-      sort_annot <- c(sort_cols.genes, input$tabHeatmap.sortCol[(ind_Gene+1):length(input$tabHeatmap.sortCol)])
+      if(length(input$tabHeatmap.sortCol) > (ind_Gene + 1) )
+        sort_annot <- c(sort_cols.genes, input$tabHeatmap.sortCol[(ind_Gene+1):length(input$tabHeatmap.sortCol)])
+      else
+        sort_annot <- c(sort_cols.genes)
     }
   }
   sort_cols <- rownames(heat_annot)[do.call(order,as.data.frame(heat_annot[,sort_annot, drop = F]))]

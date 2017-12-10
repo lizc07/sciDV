@@ -15,7 +15,13 @@ library(gplots)
 library(ggplot2)
 library(reshape2)
 library(gridExtra)
+
 org = "mmu" # "mmu" for mouse, "hsa" for human
+library(clusterProfiler)
+library(org.Mm.eg.db)
+require(stringr)
+#library(org.Hs.eg.db)
+
 dataSubmit <- NULL
 
 pal_dolphin <- c("#FF00AE", "#A020F1", "#000000", "#0403E5", "#FF8C01", "#8B0101", 
@@ -23,6 +29,13 @@ pal_dolphin <- c("#FF00AE", "#A020F1", "#000000", "#0403E5", "#FF8C01", "#8B0101
                  "#9A7A01", "#017F8B", "#05FDFF")
 pal_heatmap1 <- gplots::colorpanel(100,"blue","white","red")
 pal_heatmap2 <- gplots::colorpanel(100,"darkblue","white","red")
+
+is.color <- function(x) {
+  sapply(x, function(X) {
+    tryCatch(is.matrix(col2rgb(X)), 
+             error = function(e) FALSE)
+  })
+}
 
 myFeaturePlot <- function(object, features.plot, nrow = NULL, ncol = NULL, ...){
   require(ggplot2)

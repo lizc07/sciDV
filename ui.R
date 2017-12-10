@@ -29,11 +29,29 @@ sidebar <- dashboardSidebar(width = 320, collapsed = F,
                        )
                        
               ),
+              menuItem("Identify DEGs", icon = icon("check-square"),
+                       menuItem(text = "Perform DEG Analysis", icon = icon("photo"), badgeLabel = "Action", badgeColor = "green", tabName = "tabDEG"),
+                       uiOutput("menuDEG.displayPara"),
+                       sliderInput("tabDEG.heatmap.height", label = "Graph Height", min = 0, max = 2000, value = 600)
+              ),
+              menuItem("GO Analysis", icon = icon("check-square"),
+                       menuItem("Perform GO", icon = icon("photo"), tabName = "tabGO",badgeLabel = "Action", badgeColor = "green"),
+                       textInput(inputId = "go.genes", label = "Input genes:", value = "", width = "100%"),
+                       selectInput(inputId = "go.enrichdb", label = "Database", choices = c("GO:BP", "GO:MF", "GO:CC"), selected = "GO:BP", multiple = T),
+                       actionButton(inputId = "go.action", label = "Get GO Results")
+                       
+              ),
               menuItem("Dimension Plot", icon = icon("bar-chart-o"), 
                        menuItem("Plot the Dimensions", icon = icon("photo"),tabName = "tabDimPlot",badgeLabel = "Action", badgeColor = "green"),
                        menuItem("Display Parameters", icon = icon("list-ul"), 
                                 uiOutput("menuDimPlot.displayPara", inline = T)
                                 )
+              ),
+              menuItem("Cell Cycle Plot", icon = icon("bar-chart-o"), 
+                       menuItem("Plot the Scores", icon = icon("photo"),tabName = "tabCellCyclePlot",badgeLabel = "Action", badgeColor = "green"),
+                       menuItem("Display Parameters", icon = icon("list-ul"), 
+                                uiOutput("menuCellCyclePlot.displayPara", inline = T)
+                       )
               ),
               menuItem("Violin Plot", icon = icon("bar-chart"),
                        menuItem("Plot the vlnplot", icon = icon("photo"), tabName = "tabGeneVlnplot",badgeLabel = "Action", badgeColor = "green"),
@@ -80,11 +98,49 @@ body <- dashboardBody(
               )
             )
     ),
+    tabItem(tabName = "tabDEG", 
+            box(title = "Differential Expression Genes", width = 12, footer = "Based on Seurat2.", status = "primary", solidHeader = T,
+             column(3,
+                    selectInput(inputId = "seurat.deg.test", label = "test.use",
+                                choices = c("wilcox", "bimod","roc","t","tobit","poisson","negbinom","MAST","DESeq2"),
+                                selected = "roc", multiple = F, width = "100%")),
+             column(3,
+                    sliderInput(inputId = "seurat.deg.pct", label = "min.pct", 
+                                min = 0, max = 1, value = 0.1, step = 0.01, round = F, width = "100%")),
+             column(3,
+                    sliderInput(inputId = "seurat.deg.th", label = "logfc.threshold", 
+                                min = 0, max = 4, value = 1, step = 0.01, round = F, width = "100%")),
+             column(3,
+                    sliderInput(inputId = "seurat.deg.num", label = "top-n DEGs per Group",
+                                min = 1, max = 100, value = 10, round = T, width = "100%")),
+             
+             column(6,
+                    actionButton(inputId = "seurat.deg.action", width = "100%", label = "Get DEG Heatmap")),
+             column(6, downloadButton("seurat.deg.download","Download DEG Table")),
+             hr(),
+             uiOutput("showDEGPlot.heatmap")
+            )
+    ),
+    tabItem(tabName = "tabGO",
+            #box(title = "Gene Ontology Enrichment Analysis", width = 12, footer = "Based on clusterProfiler.", status = "primary", solidHeader = T,
+              
+            
+            uiOutput("go.ui")
+    ),
     tabItem(tabName = "tabDimPlot", 
             uiOutput("showDimPlot.gene"),
             uiOutput("showDimPlot.cat")
             
       
+    ),
+    tabItem(tabName = "tabCellCyclePlot", 
+            fluidRow(
+              box(title = "Cell Cycle Plot", width = 12,side = "left", footer = "Created  by Zongcheng Li, using ggplot2",
+                  status = "success", solidHeader = T, collapsible = T, collapsed = F,
+                  column(width = 6, uiOutput("ccplot.ui")),
+                  column(width = 6, uiOutput("ccbar.ui"))
+              )
+            )
     ),
     tabItem(tabName = "tabGeneVlnplot",
             fluidRow(
@@ -101,12 +157,6 @@ body <- dashboardBody(
                   uiOutput("barplot.ui"),downloadButton('barplotDL', 'Download')
               )
             )
-    ),
-    # Cluster -------------------------------------------------------------------------
-    tabItem(tabName = "tSNE and Clustering"
-    ),
-    tabItem(tabName = "pointPlot"
-      # DEG
     )
     
   )

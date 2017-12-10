@@ -1,0 +1,2 @@
+source("http://bioconductor.org/biocLite.R")
+biocLite(c("shiny", "shinydashboard", "DT", "Seurat", "Rtsne", "igraph", "dplyr", "pheatmap", "gplots", "ggplot2", "reshape2", "gridExtra", "clusterProfiler", "org.Mm.eg.db", "stringr"))
