@@ -1,17 +1,21 @@
 ############
 # Load Data
 ############
-upload_data <- observeEvent(input$fileInput.action, {
-  
-  if(!is.null(input$fileInput.rdata)) { # if file selected
-   tmp <- try(load(file = input$fileInput.rdata$datapath[1]))
-    #print(pbmc)
-    if(class(tmp) == "try-error"){ # if failed to load
+
+  if(!is.null(input$fileInput.rdata) || file.exists("data.pre.Rdata")) { # if file selected
+    tmp <- try(load(file = input$fileInput.rdata$datapath[1]))
+    if(file.exists("data.pre.Rdata")){
+      load("data.pre.Rdata")
+    }
+    if(class(tmp) == "try-error" && !file.exists("data.pre.Rdata")){ # if failed to load
       output$fileInput.error <- renderUI({box(renderText({tmp}),width = 8, status = "danger",solidHeader=T,
                                               title = "Error", footer = "Please Contact lizc07@vip.qq.com")
       })
       return()
     }else{ # if scucceed to load
+      if(!exists("data_color")) data_color <- NULL
+      if(!exists("data_coord")) data_coord <- NULL
+      if(!exists("data_subcat")) data_subcat <- NULL
       
       expr <- data_expr
       annot <- data_annot
@@ -20,6 +24,12 @@ upload_data <- observeEvent(input$fileInput.action, {
       coord <- data_coord
       
       if(!is.list(color)){
+       color.defaults <- rep(c("pink","#FF00AE","#A020F1","#000000","#0403E5","#FF8C01","#8B0101",
+                          "#007502","#FE0000", "#FFFF01","#FF99CB","#4A95FB","#61FE69","#9A7A01","#017F8B", "#05FDFF","grey"),100)
+        # color.defaults <- rep(c("#D0B38A", "#A3D171", "#CC9BC5", "#AC6FAE", "#533E88", "#7957A3", "#000000", "#E63325", "#0A8041", 
+        #                         "#C5208E", "#DF7AAF", "#3CBDED", "#3B55A3", "#D691BE", "#D23E28", "#6474B6", "#4288C8", "#80A469", 
+                                # "#FFCF3F", "#FBCC9F"), 100)
+        if(is.null(data_color) || any(is.color(data_color))) data_color <- color.defaults
         color <- list()
         for(i in data_subcat){
           tmp.cat <- sort(unique(annot[,i]))
@@ -128,8 +138,9 @@ upload_data <- observeEvent(input$fileInput.action, {
   
   
   # DimPlot
-  if(!is.list(dataSubmit$coord) || length(dataSubmit$coord) < 1) {} # must be list
-  else{
+  if(!is.list(dataSubmit$coord) || length(dataSubmit$coord) < 1) {# must be list
+    
+  } else{
     for(i in 1:length(dataSubmit$coord)){
       local({
         # Need local so that each item gets its own number. Without it, the value
@@ -170,7 +181,7 @@ upload_data <- observeEvent(input$fileInput.action, {
   ## menuItem VlnPlot
   output$menuVlnPlot.displayPara <- renderUI({
     fluidRow(
-      selectInput("vlnplot.gene", "Input a gene name", choices = c(rownames(dataSubmit$expr), colnames(dataSubmit$annot)), selected = ifelse(org == "hsa","RUNX1","Runx1"), multiple = F),
+      selectInput("vlnplot.gene", "Input a gene name", choices = c(rownames(dataSubmit$expr), colnames(dataSubmit$annot)), selected = ifelse(org == "hsa","RUNX1","Runx1"), multiple = T),
       selectInput("vlnplot.cat", "Input a category", choices = c(colnames(dataSubmit$annot)), selected = dataSubmit$subcat[1], multiple = F),
       sliderInput("vlnplot.width", label = "Graph Width", min = 0, max = 1600, value = 800,round = T),
       sliderInput("vlnplot.height", label = "Graph Height", min = 0, max = 1000, value = 500,round = T),
@@ -183,7 +194,7 @@ upload_data <- observeEvent(input$fileInput.action, {
   ## menuItem BarPlot
   output$menuBarPlot.displayPara <- renderUI({
     fluidRow(
-      selectInput("barplot.gene", "Input a gene name", choices = c(rownames(dataSubmit$expr), colnames(dataSubmit$annot)), selected = ifelse(org == "hsa","RUNX1","Runx1"), multiple = F),
+      selectInput("barplot.gene", "Input a gene name", choices = c(rownames(dataSubmit$expr), colnames(dataSubmit$annot)), selected = ifelse(org == "hsa","RUNX1","Runx1"), multiple = T),
       selectInput("barplot.cat", "Select a category", choices = c(colnames(dataSubmit$annot)), selected = dataSubmit$subcat[1], multiple = F),
       sliderInput("barplot.width", label = "Graph Width", min = 0, max = 1600, value = 800),
       sliderInput("barplot.height", label = "Graph Height", min = 0, max = 1000, value = 340)
@@ -202,6 +213,6 @@ upload_data <- observeEvent(input$fileInput.action, {
     )
   })
   outputOptions(output, "menuCellCyclePlot.displayPara", suspendWhenHidden = F, priority = -2)
-})
+#})
 
 

@@ -31,6 +31,7 @@ sidebar <- dashboardSidebar(width = 320, collapsed = F,
               ),
               menuItem("Identify DEGs", icon = icon("check-square"),
                        menuItem(text = "Perform DEG Analysis", icon = icon("photo"), badgeLabel = "Action", badgeColor = "green", tabName = "tabDEG"),
+                       textInput("tabDEG.select_genes", label = ("Input Genes"), placeholder = "Input gene names..."),
                        uiOutput("menuDEG.displayPara"),
                        sliderInput("tabDEG.heatmap.height", label = "Graph Height", min = 0, max = 2000, value = 600)
               ),

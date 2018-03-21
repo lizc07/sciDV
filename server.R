@@ -5,7 +5,15 @@ server <- function(input, output){
   
   # Load Data
   #incProgress(amount = 0.1, message = "Display infoBox")
-  source(file = "upload_data.R", local = T)
+  observe({
+    if(file.exists("data.pre.Rdata")){
+      source(file = "upload_data.R", local = T)
+    }else{
+      observeEvent(input$fileInput.action, {
+        source(file = "upload_data.R", local = T)
+      })
+    }
+  })
   # subcat
   #incProgress(amount = 0.2, message = "prepare subcat")
   source(file = "subcat.R", local = T)
