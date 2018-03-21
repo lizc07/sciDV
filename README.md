@@ -1,7 +1,9 @@
 # sciDV
 ##### **interactive Data Visualization for single cell RNA-Seq**  
-
->*Saved Rdata file should include the following datasets*  
+##### 1. See `0.install.R` to install dependencies.
+##### 2. Modify `global.R`, and make sure the `org` is appropriate.
+##### 3. Build a customized `Rdata` file for sciDV, which should meet the following requirements.
+>*Saved Rdata file should include the following datasets*   
 *Notice: Variable names should not be changed*
 
 - **`data_expr`**
